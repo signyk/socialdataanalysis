@@ -51,5 +51,17 @@ if create_data:
 
 def get_data():
     """Read in the cleaned data"""
-    dat = pd.read_csv("data/fireIncidents_clean.csv")
+    parse_dates = [
+        "Call Date",
+        "Watch Date",
+        "Received DtTm",
+        "Entry DtTm",
+        "Dispatch DtTm",
+        "Response DtTm",
+        "On Scene DtTm",
+        "Transport DtTm",
+        "Hospital DtTm",
+        "Available DtTm",
+    ]
+    dat = pd.read_csv("data/fireIncidents_clean.csv", parse_dates=parse_dates)
     return dat
