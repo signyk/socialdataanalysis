@@ -1,5 +1,5 @@
 # Social Data Analysis 02806
-Assignments in the course Social Data Analysis (02806) in DTU
+Code for the final assignment in the course Social Data Analysis (02806) in DTU
 
 ## Setup
 Make sure you have [poetry](https://python-poetry.org/) installed.
