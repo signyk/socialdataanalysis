@@ -68,7 +68,7 @@ DISTRICTS = [
     "Financial District/South Beach",
     "Bayview Hunters Point",
     "Sunset/Parkside",
-    " Western Addition",
+    "Western Addition",
     "Nob Hill",
     "Castro/Upper Market",
     "Hayes Valley",
