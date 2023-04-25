@@ -2,6 +2,7 @@
 import datetime as dt
 import pandas as pd
 import json
+from urllib.request import urlopen
 
 
 def create_data():
@@ -72,6 +73,7 @@ def get_neighborhoods():
     """Read in the neighborhoods data"""
     f = open("data/neighborhoods.geojson", "r")
     neighborhoods = json.load(f)
+
     return neighborhoods
 
 
@@ -145,6 +147,15 @@ def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
 
     # Drop the rows with on_scene_dttm == NaT
     dat_clean = dat_clean.loc[dat_clean["on_scene_dttm"].notna()]
+
+    "Map incident_number to on_scene_time"
+    # Create a column for the on scene time in minutes
+    dat_clean["on_scene_time"] = (
+        dat_clean["on_scene_dttm"] - dat_clean["received_dttm"]
+    ).dt.total_seconds() / 60
+
+    # Drop rows where on_scene_time < 0 (these are errors, AM/PM confusion)
+    dat_clean = dat_clean.loc[dat_clean["on_scene_time"] >= 0]
 
     return dat_clean
 
