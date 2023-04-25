@@ -7,8 +7,8 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 
 # Bokeh
-from bokeh.models import ColumnDataSource, FactorRange, Legend, HoverTool
-from bokeh.plotting import figure, show, save
+from bokeh.models import ColumnDataSource, Legend
+from bokeh.plotting import figure, show
 from bokeh.io import output_file, show
 
 # Local
@@ -48,7 +48,7 @@ fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 fig.show()
 
 
-""" Bokeh plot """
+""" Bokeh plot of the avaerage response time by neighborhood over the years"""
 output_file("figs/bokeh1.html")
 dat_fire = dat[dat["call_type"].isin(FIRE_CALL_TYPES)]
 dat_fire = dat_fire[dat_fire["neighborhood"].notna()]
@@ -72,7 +72,7 @@ p = figure(
     x_range=(2012, 2022),
     height=500,
     width=800,
-    title="Average response time by neighborhood by years",
+    title="Average response time by neighborhood over the years",
     toolbar_location=None,
     tools="hover",
     tooltips=[
