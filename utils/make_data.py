@@ -73,6 +73,9 @@ def get_neighborhoods():
     """Read in the neighborhoods data"""
     f = open("data/neighborhoods.geojson", "r")
     neighborhoods = json.load(f)
+    # Add an id to each neighborhood
+    for f in neighborhoods["features"]:
+        f["id"] = f["properties"]["nhood"]
 
     return neighborhoods
 
