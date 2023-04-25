@@ -158,3 +158,4 @@ def get_on_scene_map(dat: pd.DataFrame) -> pd.DataFrame:
 
     # Drop rows where on_scene_time < 0 (these are errors, AM/PM confusion)
     dat = dat.loc[dat["on_scene_time"] >= 0]
+    dat = dat.loc[dat["on_scene_time"] > 720]

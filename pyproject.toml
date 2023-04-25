@@ -13,6 +13,8 @@ bokeh = "^3.1.0"
 folium = "^0.14.0"
 plotly = "^5.14.1"
 matplotlib = "^3.7.1"
+seaborn = "^0.12.2"
+statsmodels = "^0.13.5"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -9,7 +9,7 @@ import plotly.express as px
 from utils.make_data import get_data, get_on_scene_map, clean_data
 import json
 
-import matplotlib.pyplot as plt
+from matplotlib.pyplot import figure, title, subplot, plot, hist, show
 
 """ Importing data """
 
@@ -21,9 +21,12 @@ print(dat.columns)
 
 get_on_scene_map(dat)
 print(dat.on_scene_time)
+dat = dat.loc[dat["on_scene_time"] >= 0]
+dat = dat.loc[dat["on_scene_time"] < 720]
+print(dat[dat["on_scene_time"] < 0])
 
 print(dat.neighborhood.nunique())
-
+print(dat.neighborhood.value_counts())
 
 f = open(
     "/Users/magnea/Desktop/DTU/Social Data/socialdataanalysis/data/Analysis Neighborhoods.geojson"
@@ -58,6 +61,35 @@ fig.write_html("map.html")
 
 """ Stat analysis of response time """
 
-fig, ax = plt.subplots()
-dat["on_scene_time"].plot(ax=ax, kind="bar")
-plt.show()
+
+tenderloin = dat[dat["neighborhood"] == "Tenderloin"]
+# tenderloin = tenderloin[tenderloin["on_scene_time"]<70]
+min(tenderloin["on_scene_time"])
+
+nbins = 400
+figure(figsize=(12, 4))
+title("Normal distribution")
+subplot(1, 2, 1)
+plot(tenderloin["on_scene_time"], ".")
+subplot(1, 3, 3)
+hist(tenderloin["on_scene_time"], bins=nbins)
+show()
+
+
+excelsior = dat[dat["neighborhood"] == "Excelsior"]
+# excelsior = excelsior[excelsior["on_scene_time"]<350]
+min(excelsior["on_scene_time"])
+
+nbins = 400
+figure(figsize=(12, 4))
+title("Normal distribution")
+subplot(1, 2, 1)
+plot(excelsior["on_scene_time"], ".")
+subplot(1, 3, 3)
+hist(excelsior["on_scene_time"], bins=nbins)
+show()
+
+
+test = dat[dat["on_scene_time"] > 720]
+print(test.shape)
+print(dat.shape)
