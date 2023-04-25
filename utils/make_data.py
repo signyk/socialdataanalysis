@@ -1,10 +1,11 @@
 """ Importing packages """
 import datetime as dt
 import pandas as pd
+import json
 
-""" Reading data """
-create_data = False
-if create_data:
+
+def create_data():
+    """Read in the raw data and clean it. Write out a clean csv file"""
     raw_dat = pd.read_csv("data/fireIncidents.csv")
     # Create a copy of the data to clean
     dat = raw_dat.copy()
@@ -65,6 +66,13 @@ def get_data():
     ]
     dat = pd.read_csv("data/fireIncidents_clean.csv", parse_dates=parse_dates)
     return dat
+
+
+def get_neighborhoods():
+    """Read in the neighborhoods data"""
+    f = open("data/neighborhoods.geojson", "r")
+    neighborhoods = json.load(f)
+    return neighborhoods
 
 
 def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
