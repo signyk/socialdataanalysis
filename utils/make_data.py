@@ -159,17 +159,6 @@ def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
 
     # Drop rows where on_scene_time < 0 (these are errors, AM/PM confusion)
     dat_clean = dat_clean.loc[dat_clean["on_scene_time"] >= 0]
+    dat_clean = dat_clean.loc[dat_clean["on_scene_time"] <= 720]
 
     return dat_clean
-
-
-def get_on_scene_map(dat: pd.DataFrame) -> pd.DataFrame:
-    "Map incident_number to on_scene_time"
-    # Create a column for the on scene time in minutes
-    dat["on_scene_time"] = (
-        dat["on_scene_dttm"] - dat["received_dttm"]
-    ).dt.total_seconds() / 60
-
-    # Drop rows where on_scene_time < 0 (these are errors, AM/PM confusion)
-    dat = dat.loc[dat["on_scene_time"] >= 0]
-    dat = dat.loc[dat["on_scene_time"] > 720]
