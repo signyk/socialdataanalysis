@@ -9,7 +9,7 @@ from bokeh.io import show
 # Local
 from utils.make_data import get_data, clean_data, get_neighborhoods
 from utils.const import FIRE_CALL_TYPES
-from utils.plot_functions import make_bokeh_line_plot
+from utils.plot_functions import make_bokeh_line_plot, make_map
 
 """ Importing data """
 dat_raw = get_data()
@@ -20,26 +20,28 @@ neighborhoods = get_neighborhoods()
 print(dat.columns)
 
 """ Plotting a map of San Fransisco showing average response time for each neighborhood """
-mean_response = (
-    dat.groupby("neighborhood", as_index=False)["on_scene_time"]
-    .mean()
-    .rename(columns={"neighborhood": "Neighborhood", "on_scene_time": "On Scene Time"})
-)
+plot_data = dat.copy()
 
-fig = px.choropleth_mapbox(
-    mean_response,
-    geojson=neighborhoods,
-    locations="Neighborhood",
-    color="On Scene Time",
-    color_continuous_scale="Viridis",
-    range_color=(0, max(mean_response["On Scene Time"])),
-    mapbox_style="carto-positron",
-    zoom=11,
-    center={"lat": 37.773972, "lon": -122.431297},
-    opacity=0.5,
-    # labels={"On Scene Time": "On Scene Time"},
+fig = make_map(
+    plot_data,
+    neighborhoods,
+    column_to_plot="on_scene_time",
+    scale_name="On Scene Time",
 )
-fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+fig.show()
+
+""" Plotting a map of San Fransisco showing average transport time for each neighborhood """
+# Create a column for the on scene time in minutes
+plot_data["transport_time"] = (
+    plot_data["hospital_dttm"] - plot_data["on_scene_dttm"]
+).dt.total_seconds() / 60
+
+fig = make_map(
+    plot_data,
+    neighborhoods,
+    column_to_plot="transport_time",
+    scale_name="Transport Time",
+)
 fig.show()
 
 

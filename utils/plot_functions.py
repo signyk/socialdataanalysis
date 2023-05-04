@@ -1,5 +1,6 @@
 """ Importing packages """
 import pandas as pd
+import plotly.express as px
 
 # Bokeh
 from bokeh.models import ColumnDataSource, Legend
@@ -9,6 +10,36 @@ from bokeh.io import output_file
 # Local
 from utils.help_functions import get_viridis_pallette
 from utils.const import FIRE_CALL_TYPES
+
+
+def make_map(
+    dat: pd.DataFrame,
+    neighborhoods: dict,
+    column_to_plot: str = "on_scene_time",
+    scale_name: str = "On Scene Time",
+):
+    """Plotting a map of San Fransisco showing average response time for each neighborhood"""
+    mean_response = (
+        dat.groupby("neighborhood", as_index=False)[column_to_plot]
+        .mean()
+        .rename(columns={"neighborhood": "Neighborhood", column_to_plot: scale_name})
+    )
+
+    fig = px.choropleth_mapbox(
+        mean_response,
+        geojson=neighborhoods,
+        locations="Neighborhood",
+        color=scale_name,
+        color_continuous_scale="Viridis",
+        range_color=(0, max(mean_response[scale_name])),
+        mapbox_style="carto-positron",
+        zoom=11,
+        center={"lat": 37.773972, "lon": -122.431297},
+        opacity=0.5,
+        # labels={"On Scene Time": "On Scene Time"},
+    )
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    return fig
 
 
 def make_bokeh_line_plot(
