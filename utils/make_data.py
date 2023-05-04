@@ -2,7 +2,6 @@
 import datetime as dt
 import pandas as pd
 import json
-from urllib.request import urlopen
 
 
 def create_data():

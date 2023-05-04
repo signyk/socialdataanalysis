@@ -1,20 +1,15 @@
 """ Importing packages """
-import datetime as dt
-import pandas as pd
-import numpy as np
 import folium
 import plotly.express as px
-import matplotlib.pyplot as plt
 
 # Bokeh
-from bokeh.models import ColumnDataSource, Legend
-from bokeh.plotting import figure, show
-from bokeh.io import output_file, show
+from bokeh.plotting import show
+from bokeh.io import show
 
 # Local
 from utils.make_data import get_data, clean_data, get_neighborhoods
-from utils.help_functions import get_viridis_pallette
 from utils.const import FIRE_CALL_TYPES
+from utils.plot_functions import make_bokeh_line_plot
 
 """ Importing data """
 dat_raw = get_data()
@@ -49,66 +44,32 @@ fig.show()
 
 
 """ Bokeh plot of the avaerage response time by neighborhood over the years"""
-output_file("figs/bokeh1.html")
-dat_fire = dat[dat["call_type"].isin(FIRE_CALL_TYPES)]
-dat_fire = dat_fire[dat_fire["neighborhood"].notna()]
-dat_fire["Year"] = dat_fire["received_dttm"].dt.year  # .astype(str)
+plot_dat = dat.copy()
+plot_dat["Year"] = plot_dat["received_dttm"].dt.year  # .astype(str)
 
-res = (
-    dat_fire.groupby(["neighborhood", "Year"])["on_scene_time"]
-    .mean()
-    .reset_index(name="mean")
+p = make_bokeh_line_plot(
+    plot_dat,
+    "bokeh_neighborhoods.html",
+    FIRE_CALL_TYPES,
+    "neighborhood",
+    "Year",
+    (2012, 2022),
 )
-processed_dat = res.pivot(
-    index="Year", columns="neighborhood", values="mean"
-).reset_index()
+show(p)
 
-descripts = [d for d in list(dat["neighborhood"].unique()) if not pd.isna(d)]
-src = ColumnDataSource(processed_dat)
-years = [i for i in range(2012, 2022)]
-viridis = get_viridis_pallette(len(descripts))
-p = figure(
-    # x_range=years,
-    x_range=(2012, 2022),
-    height=500,
-    width=800,
-    title="Average response time by neighborhood over the years",
-    toolbar_location=None,
-    tools="hover",
-    tooltips=[
-        ("Neighborhood", "$name"),
-        ("Year", "@Year"),
-        ("Average response time", "@$name"),
-    ],
+""" Bokeh plot of the avaerage response time by call type over the years"""
+plot_dat = dat.copy()
+plot_dat["Year_month"] = plot_dat["received_dttm"].dt.to_period("M").astype(str)
+year_months = [
+    "-".join([str(i), str(j).zfill(2)]) for i in range(2012, 2022) for j in range(1, 13)
+]
+
+p = make_bokeh_line_plot(
+    plot_dat,
+    "bokeh_call_types.html",
+    FIRE_CALL_TYPES,
+    "call_type",
+    "Year_month",
+    year_months,
 )
-
-items = []  # for the custom legend
-lines = {}  # to store the lines
-
-for indx, i in enumerate(descripts):
-    ### Create a line for each district
-    lines[i] = p.line(
-        x="Year",
-        y=i,
-        source=src,
-        alpha=0.9,
-        muted_alpha=0.07,
-        width=1.2,
-        color=viridis[indx],
-        name=i,
-    )
-    items.append((i, [lines[i]]))
-    lines[i].visible = True if i == list(descripts)[0] else False
-
-legend1 = Legend(items=items[:34], location=(0, 10))
-legend2 = Legend(items=items[34:], location=(0, 10))
-p.add_layout(legend1, "right")
-p.add_layout(legend2, "right")
-p.legend.click_policy = "hide"  # or "mute"
-p.xaxis.axis_label = "Year"
-p.yaxis.axis_label = "Average response time"
-p.y_range.only_visible = True
-p.y_range.start = 0
-p.sizing_mode = "scale_width"
-
 show(p)
