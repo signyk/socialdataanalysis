@@ -144,6 +144,10 @@ def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
 
     """ Create a column for the hour of the day """
     dat_clean["hour"] = dat_clean["received_dttm"].dt.hour
+    # create bins for the hour of the day
+    bins = [-1, 6, 12, 18, 24]
+    labels = ["Night", "Morning", "Afternoon", "Evening"]
+    dat_clean["period_of_day"] = pd.cut(dat_clean["hour"], bins=bins, labels=labels)
 
     "Drop rows"
     # Drop the rows with call_final_disposition == "Cancelled" or "Duplicate"
