@@ -1,10 +1,11 @@
 """ Importing packages """
 import folium
 import plotly.express as px
+import matplotlib.pyplot as plt
 
 # Bokeh
 from bokeh.plotting import show
-from bokeh.io import show
+from bokeh.io import show, output_file
 
 # Local
 from utils.make_data import get_data, clean_data, get_neighborhoods
@@ -29,6 +30,7 @@ plot_data = dat.copy()
 
 fig = make_map(plot_data, neighborhoods, column_to_plot="on_scene_time")
 fig.show()
+fig.write_html("figs/map_response_neighborhood.html")
 
 """ Plotting a map of San Fransisco showing average transport time for each neighborhood """
 # Create a column for the on scene time in minutes
@@ -42,6 +44,7 @@ fig = make_map(
     column_to_plot="transport_time",
 )
 fig.show()
+fig.write_html("figs/map_transport_neighborhood.html")
 
 
 """ Bokeh plot with tabs showing the average response and transport time by neighborhood over the years"""
@@ -50,7 +53,7 @@ plot_dat["Year"] = plot_dat["received_dttm"].dt.year  # .astype(str)
 
 p1 = make_bokeh_line_plot(
     plot_dat,
-    "bokeh_neighborhoods.html",
+    "bokeh_response_neighborhoods.html",
     FILTER_CALL_TYPES,
     "neighborhood",
     "Year",
@@ -60,16 +63,17 @@ p1 = make_bokeh_line_plot(
 
 p2 = make_bokeh_line_plot(
     plot_dat,
-    "bokeh_neighborhoods.html",
+    "bokeh_transport_neighborhoods.html",
     FILTER_CALL_TYPES,
     "neighborhood",
     "Year",
     "transport_time",
     (2012, 2022),
 )
-
+output_file("figs/response_transport_neighborhood_years.html")
 tabs_plot = make_bokeh_tabs([p1, p2])
 show(tabs_plot)
+
 
 """ Bokeh plot of the average response time by call type over the years and months"""
 plot_dat = dat.copy()
@@ -89,6 +93,7 @@ p = make_bokeh_line_plot(
 )
 show(p)
 
+
 """ Cal plot of the average response time by call type over the years and months"""
 p = make_cal_plot(
     dat=dat,
@@ -96,6 +101,7 @@ p = make_cal_plot(
     filter_years=range(2017, 2023),
     column_name="on_scene_time",
 )
+plt.savefig("figs/calplot_response.png", bbox_inches="tight")
 p.show()
 
 """ Cal plot of the average transport time by call type over the years and months"""
@@ -105,4 +111,5 @@ p = make_cal_plot(
     filter_years=range(2017, 2023),
     column_name="transport_time",
 )
+plt.savefig("figs/calplot_transport.png", bbox_inches="tight")
 p.show()

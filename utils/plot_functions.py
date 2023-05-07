@@ -87,8 +87,8 @@ def make_bokeh_line_plot(
     viridis = get_viridis_pallette(len(descripts))
     p = figure(
         x_range=x_range,
-        height=500,
-        width=800,
+        height=600,
+        width=1000,
         title=format_string(y_var),
         toolbar_location=None,
         tools="hover",
@@ -117,8 +117,9 @@ def make_bokeh_line_plot(
         items.append((i, [lines[i]]))
         lines[i].visible = True if i == list(descripts)[0] else False
 
-    legend1 = Legend(items=items[:34], location=(0, 10))
-    legend2 = Legend(items=items[34:], location=(0, 10))
+    legend1 = Legend(items=items[:21], location=(0, 10))
+    legend2 = Legend(items=items[21:], location=(0, 10))
+    # legend3 = Legend(items=items[30:], location=(0, 10))
     p.add_layout(legend1, "right")
     p.add_layout(legend2, "right")
     p.legend.click_policy = "hide"  # or "mute"

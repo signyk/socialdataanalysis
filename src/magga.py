@@ -48,6 +48,7 @@ processed_dat = res.pivot(index="Year", columns="Time", values="mean").reset_ind
 from bokeh.models import ColumnDataSource, FactorRange, Legend
 from bokeh.plotting import figure, show
 
+output_file("figs/split_time.html")
 descripts = [d for d in list(long["Time"].unique()) if not pd.isna(d)]
 src = ColumnDataSource(processed_dat)
 x_range = processed_dat["Year"].unique().tolist()
@@ -81,9 +82,9 @@ p2.y_range.start = 0
 p2.xgrid.grid_line_color = None
 p2.axis.minor_tick_line_color = None
 p2.outline_line_color = None
-p2.legend.location = "top_left"
+p2.legend.location = "top_right"
 p2.legend.orientation = "vertical"
-p2.add_layout(p2.legend[0], "left")
+p2.add_layout(p2.legend[0], "right")
 
 show(p2)
 
