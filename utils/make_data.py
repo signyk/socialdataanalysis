@@ -88,7 +88,6 @@ def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
         [
             "Box",
             "Original Priority",
-            "Priority",
             "Final Priority",
             "Zipcode of Incident",
             "Fire Prevention District",
