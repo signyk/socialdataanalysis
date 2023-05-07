@@ -1,4 +1,5 @@
 """ Importing packages """
+from math import pi
 import pandas as pd
 import plotly.express as px
 from typing import List
@@ -7,7 +8,7 @@ import seaborn as sns
 
 # Bokeh
 from bokeh.models import TabPanel, Tabs
-from bokeh.models import ColumnDataSource, Legend
+from bokeh.models import ColumnDataSource, Legend, HoverTool
 from bokeh.plotting import figure
 from bokeh.io import output_file, output_notebook
 
@@ -54,19 +55,12 @@ def make_map(
 
 def make_bokeh_line_plot(
     dat: pd.DataFrame,
-    filename: str = "bokeh1.html",
     filter_call_types: list = FILTER_CALL_TYPES,
     color_var: str = "neighborhood",
     x_var: str = "Year",
     y_var: str = "on_scene_time",
     x_range: tuple = (2017, 2022),
-    notebook: bool = False,
 ):
-    full_path = "figs/" + filename
-    if notebook:
-        output_notebook()
-    else:
-        output_file(full_path)
     dat_fire = dat[dat["call_type"].isin(filter_call_types)]
     dat_fire = dat_fire[dat_fire[color_var].notna()]
     dat_fire["x_variable"] = dat_fire[x_var]
@@ -182,3 +176,35 @@ def make_boxplot(
     b.set_xticklabels(b.get_xticklabels(), rotation=90)
 
     return b
+
+
+def plot_importance(column_names: List[str], importances: List[float]):
+    # Create a dataframe from the feature importances
+    feature_importances = pd.DataFrame(
+        {"feature": column_names, "importance": importances}
+    )
+
+    # Create a ColumnDataSource from the dataframe
+    source = ColumnDataSource(feature_importances)
+
+    # Create a figure with a datetime type x-axis
+    p = figure(x_range=feature_importances["feature"], height=500, width=800)
+
+    # Add plot elements
+    p.vbar(
+        x="feature",
+        top="importance",
+        source=source,
+        width=0.70,
+        color="firebrick",
+        alpha=0.7,
+    )
+
+    # Rotate x-axis labels
+    p.xaxis.major_label_orientation = pi / 2
+    # Add interactivity
+    hover = HoverTool()
+    hover.tooltips = [("Feature", "@feature"), ("Importance", "@importance{0.000}")]
+    p.add_tools(hover)
+
+    return p

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bokeh Plot</title>
+    <style>
+      html, body {
+        box-sizing: border-box;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-3.1.0.min.js"></script>
+    <script type="text/javascript">
+        Bokeh.set_log_level("info");
+    </script>
+  </head>
+  <body>
+    <div id="6e931cc7-1ab4-44b9-8708-6698a722de70" data-root-id="p7007" style="display: contents;"></div>
+  
+    <script type="application/json" id="p7135">
+      {"45bce5f0-7b78-466b-b65e-bee7797cc9a4":{"version":"3.1.0","title":"Bokeh Application","defs":[],"roots":[{"type":"object","name":"Figure","id":"p7007","attributes":{"width":800,"height":500,"x_range":{"type":"object","name":"FactorRange","id":"p7016","attributes":{"factors":["neighborhood_Bayview Hunters Point","neighborhood_Bernal Heights","neighborhood_Castro/Upper Market","neighborhood_Chinatown","neighborhood_Excelsior","neighborhood_Financial District/South Beach","neighborhood_Glen Park","neighborhood_Golden Gate Park","neighborhood_Haight Ashbury","neighborhood_Hayes Valley","neighborhood_Inner Richmond","neighborhood_Inner Sunset","neighborhood_Japantown","neighborhood_Lakeshore","neighborhood_Lincoln Park","neighborhood_Lone Mountain/USF","neighborhood_Marina","neighborhood_McLaren Park","neighborhood_Mission","neighborhood_Mission Bay","neighborhood_Nob Hill","neighborhood_Noe Valley","neighborhood_North Beach","neighborhood_Oceanview/Merced/Ingleside","neighborhood_Outer Mission","neighborhood_Outer Richmond","neighborhood_Pacific Heights","neighborhood_Portola","neighborhood_Potrero Hill","neighborhood_Presidio","neighborhood_Presidio Heights","neighborhood_Russian Hill","neighborhood_Seacliff","neighborhood_South of Market","neighborhood_Sunset/Parkside","neighborhood_Tenderloin","neighborhood_Treasure Island","neighborhood_Twin Peaks","neighborhood_Visitacion Valley","neighborhood_West of Twin Peaks","neighborhood_Western Addition","period_of_day_Night","period_of_day_Morning","period_of_day_Afternoon","period_of_day_Evening"]}},"y_range":{"type":"object","name":"DataRange1d","id":"p7009"},"x_scale":{"type":"object","name":"CategoricalScale","id":"p7020"},"y_scale":{"type":"object","name":"LinearScale","id":"p7022"},"title":{"type":"object","name":"Title","id":"p7012"},"renderers":[{"type":"object","name":"GlyphRenderer","id":"p7058","attributes":{"data_source":{"type":"object","name":"ColumnDataSource","id":"p7004","attributes":{"selected":{"type":"object","name":"Selection","id":"p7006","attributes":{"indices":[],"line_indices":[]}},"selection_policy":{"type":"object","name":"UnionRenderers","id":"p7005"},"data":{"type":"map","entries":[["index",{"type":"ndarray","array":{"type":"bytes","data":"AAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAoAAAALAAAADAAAAA0AAAAOAAAADwAAABAAAAARAAAAEgAAABMAAAAUAAAAFQAAABYAAAAXAAAAGAAAABkAAAAaAAAAGwAAABwAAAAdAAAAHgAAAB8AAAAgAAAAIQAAACIAAAAjAAAAJAAAACUAAAAmAAAAJwAAACgAAAApAAAAKgAAACsAAAAsAAAA"},"shape":[45],"dtype":"int32","order":"little"}],["feature",{"type":"ndarray","array":["neighborhood_Bayview Hunters Point","neighborhood_Bernal Heights","neighborhood_Castro/Upper Market","neighborhood_Chinatown","neighborhood_Excelsior","neighborhood_Financial District/South Beach","neighborhood_Glen Park","neighborhood_Golden Gate Park","neighborhood_Haight Ashbury","neighborhood_Hayes Valley","neighborhood_Inner Richmond","neighborhood_Inner Sunset","neighborhood_Japantown","neighborhood_Lakeshore","neighborhood_Lincoln Park","neighborhood_Lone Mountain/USF","neighborhood_Marina","neighborhood_McLaren Park","neighborhood_Mission","neighborhood_Mission Bay","neighborhood_Nob Hill","neighborhood_Noe Valley","neighborhood_North Beach","neighborhood_Oceanview/Merced/Ingleside","neighborhood_Outer Mission","neighborhood_Outer Richmond","neighborhood_Pacific Heights","neighborhood_Portola","neighborhood_Potrero Hill","neighborhood_Presidio","neighborhood_Presidio Heights","neighborhood_Russian Hill","neighborhood_Seacliff","neighborhood_South of Market","neighborhood_Sunset/Parkside","neighborhood_Tenderloin","neighborhood_Treasure Island","neighborhood_Twin Peaks","neighborhood_Visitacion Valley","neighborhood_West of Twin Peaks","neighborhood_Western Addition","period_of_day_Night","period_of_day_Morning","period_of_day_Afternoon","period_of_day_Evening"],"shape":[45],"dtype":"object","order":"little"}],["importance",{"type":"ndarray","array":{"type":"bytes","data":"v+yPTtc1sD8AAAAAAAAAAFXwk6XZEZM/AAAAAAAAAAAAAAAAAAAAAOFMTIZMvEY/AAAAAAAAAAAAAAAAAAAAADzlV7Qh0EI/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmO85qiZHEP6fsccPLb04/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa7r8w/LJzD8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABcwjzLXLuXPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGoMkPn0zHM/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjnnXmAMSZD8AAAAAAAAAACGOz/cS8Mw/gHGOSZUYuz8AAAAAAAAAABJf+9dUaUw/AAAAAAAAAAAAAAAAAAAAALH6rD4dnrM/bpO/td8itz8AAAAAAAAAAAAAAAAAAAAA"},"shape":[45],"dtype":"float64","order":"little"}]]}}},"view":{"type":"object","name":"CDSView","id":"p7059","attributes":{"filter":{"type":"object","name":"AllIndices","id":"p7060"}}},"glyph":{"type":"object","name":"VBar","id":"p7055","attributes":{"x":{"type":"field","field":"feature"},"width":{"type":"value","value":0.7},"top":{"type":"field","field":"importance"},"line_color":{"type":"value","value":"firebrick"},"line_alpha":{"type":"value","value":0.7},"fill_color":{"type":"value","value":"firebrick"},"fill_alpha":{"type":"value","value":0.7},"hatch_color":{"type":"value","value":"firebrick"},"hatch_alpha":{"type":"value","value":0.7}}},"nonselection_glyph":{"type":"object","name":"VBar","id":"p7056","attributes":{"x":{"type":"field","field":"feature"},"width":{"type":"value","value":0.7},"top":{"type":"field","field":"importance"},"line_color":{"type":"value","value":"firebrick"},"line_alpha":{"type":"value","value":0.1},"fill_color":{"type":"value","value":"firebrick"},"fill_alpha":{"type":"value","value":0.1},"hatch_color":{"type":"value","value":"firebrick"},"hatch_alpha":{"type":"value","value":0.1}}},"muted_glyph":{"type":"object","name":"VBar","id":"p7057","attributes":{"x":{"type":"field","field":"feature"},"width":{"type":"value","value":0.7},"top":{"type":"field","field":"importance"},"line_color":{"type":"value","value":"firebrick"},"line_alpha":{"type":"value","value":0.2},"fill_color":{"type":"value","value":"firebrick"},"fill_alpha":{"type":"value","value":0.2},"hatch_color":{"type":"value","value":"firebrick"},"hatch_alpha":{"type":"value","value":0.2}}}}}],"toolbar":{"type":"object","name":"Toolbar","id":"p7015","attributes":{"tools":[{"type":"object","name":"PanTool","id":"p7037"},{"type":"object","name":"WheelZoomTool","id":"p7038"},{"type":"object","name":"BoxZoomTool","id":"p7039","attributes":{"overlay":{"type":"object","name":"BoxAnnotation","id":"p7040","attributes":{"syncable":false,"level":"overlay","visible":false,"left_units":"canvas","right_units":"canvas","bottom_units":"canvas","top_units":"canvas","line_color":"black","line_alpha":1.0,"line_width":2,"line_dash":[4,4],"fill_color":"lightgrey","fill_alpha":0.5}}}},{"type":"object","name":"SaveTool","id":"p7041"},{"type":"object","name":"ResetTool","id":"p7042"},{"type":"object","name":"HelpTool","id":"p7043"},{"type":"object","name":"HoverTool","id":"p7061","attributes":{"renderers":"auto","tooltips":[["Feature","@feature"],["Importance","@importance{0.000}"]]}}]}},"left":[{"type":"object","name":"LinearAxis","id":"p7030","attributes":{"ticker":{"type":"object","name":"BasicTicker","id":"p7033","attributes":{"mantissas":[1,2,5]}},"formatter":{"type":"object","name":"BasicTickFormatter","id":"p7031"},"major_label_policy":{"type":"object","name":"AllLabels","id":"p7032"}}}],"below":[{"type":"object","name":"CategoricalAxis","id":"p7024","attributes":{"ticker":{"type":"object","name":"CategoricalTicker","id":"p7027"},"formatter":{"type":"object","name":"CategoricalTickFormatter","id":"p7025"},"major_label_orientation":1.5707963267948966,"major_label_policy":{"type":"object","name":"AllLabels","id":"p7026"}}}],"center":[{"type":"object","name":"Grid","id":"p7029","attributes":{"axis":{"id":"p7024"}}},{"type":"object","name":"Grid","id":"p7036","attributes":{"dimension":1,"axis":{"id":"p7030"}}}]}}],"callbacks":{"type":"map"}}}
+    </script>
+    <script type="text/javascript">
+      (function() {
+        const fn = function() {
+          Bokeh.safely(function() {
+            (function(root) {
+              function embed_document(root) {
+              const docs_json = document.getElementById('p7135').textContent;
+              const render_items = [{"docid":"45bce5f0-7b78-466b-b65e-bee7797cc9a4","roots":{"p7007":"6e931cc7-1ab4-44b9-8708-6698a722de70"},"root_ids":["p7007"]}];
+              root.Bokeh.embed.embed_items(docs_json, render_items);
+              }
+              if (root.Bokeh !== undefined) {
+                embed_document(root);
+              } else {
+                let attempts = 0;
+                const timer = setInterval(function(root) {
+                  if (root.Bokeh !== undefined) {
+                    clearInterval(timer);
+                    embed_document(root);
+                  } else {
+                    attempts++;
+                    if (attempts > 100) {
+                      clearInterval(timer);
+                      console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+                    }
+                  }
+                }, 10, root)
+              }
+            })(window);
+          });
+        };
+        if (document.readyState != "loading") fn();
+        else document.addEventListener("DOMContentLoaded", fn);
+      })();
+    </script>
+  </body>
+</html>

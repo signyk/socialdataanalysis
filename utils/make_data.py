@@ -14,7 +14,7 @@ def create_data():
     # Convert Call Date to datetime
     dat["Call Date"] = pd.to_datetime(dat["Call Date"], format="%m/%d/%Y")
 
-    # Only keep data from 2017 to 2023
+    # Only keep data from 2012 to 2023
     dat = dat.loc[dat["Call Date"] < dt.datetime(2023, 1, 1)]
     dat = dat.loc[dat["Call Date"] >= dt.datetime(2012, 1, 1)]
 
@@ -97,9 +97,6 @@ def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
         ],
         axis=1,
     )
-    "Only keep data from 2017 to 2023"
-    dat_clean = dat_clean.loc[dat_clean["Call Date"] < dt.datetime(2023, 1, 1)]
-    dat_clean = dat_clean.loc[dat_clean["Call Date"] >= dt.datetime(2017, 1, 1)]
 
     "Clean up the location column"
     # extract the latitude and longitude from the case_location column and add them as seperate columns
@@ -181,4 +178,12 @@ def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
     dat_clean = dat_clean.loc[dat_clean["transport_time"] >= 0]
     dat_clean = dat_clean.loc[dat_clean["transport_time"] <= 720]
 
+    return dat_clean
+
+
+def filter_data_years(dat: pd.DataFrame, year_from: int = 2017, year_to: int = 2023):
+    "Only keep data from year_from to year_to"
+    dat_clean = dat.copy()
+    dat_clean = dat_clean.loc[dat_clean["call_date"] < dt.datetime(year_to, 1, 1)]
+    dat_clean = dat_clean.loc[dat_clean["call_date"] >= dt.datetime(year_from, 1, 1)]
     return dat_clean
