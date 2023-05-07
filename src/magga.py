@@ -309,3 +309,28 @@ dat.groupby("battalion")["on_scene_time"].mean()
 dat["call_type"].value_counts()
 medical["priority"].value_counts()
 medical["final_priority"].value_counts()
+
+
+## Look into april 2022
+caldat = dat.copy()
+caldat = caldat[caldat["call_type"].isin(["Medical Incident"])]
+caldat = caldat[caldat["received_dttm"].dt.year == 2022]
+caldat = caldat[caldat["received_dttm"].dt.month == 4]
+caldat.sort_values(by="received_dttm", inplace=True)
+print(caldat.columns)
+aprilfools = caldat[
+    caldat["received_dttm"].dt.date == dt.date(year=2022, month=4, day=1)
+]
+april17th = caldat[
+    caldat["received_dttm"].dt.date == dt.date(year=2022, month=4, day=17)
+]
+april2nd = caldat[caldat["received_dttm"].dt.date == dt.date(year=2022, month=4, day=2)]
+# Select the relevant columns ("received_dttm" and column_name)
+caldat = caldat[["received_dttm", "on_scene_time"]]
+# Set the index to be the date
+caldat = caldat.set_index("received_dttm")
+
+alldat = dat.copy()
+april2nd = dat_raw[
+    dat_raw["Received DtTm"].dt.date == dt.date(year=2022, month=4, day=2)
+]
