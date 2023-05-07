@@ -16,7 +16,7 @@ def create_data():
 
     # Only keep data from 2017 to 2023
     dat = dat.loc[dat["Call Date"] < dt.datetime(2023, 1, 1)]
-    dat = dat.loc[dat["Call Date"] >= dt.datetime(2017, 1, 1)]
+    dat = dat.loc[dat["Call Date"] >= dt.datetime(2012, 1, 1)]
 
     # Convert the rest of the date columns to datetime
     dat["Watch Date"] = pd.to_datetime(dat["Watch Date"], format="%m/%d/%Y")
@@ -97,6 +97,10 @@ def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
         ],
         axis=1,
     )
+    "Only keep data from 2017 to 2023"
+    dat_clean = dat_clean.loc[dat_clean["Call Date"] < dt.datetime(2023, 1, 1)]
+    dat_clean = dat_clean.loc[dat_clean["Call Date"] >= dt.datetime(2017, 1, 1)]
+
     "Clean up the location column"
     # extract the latitude and longitude from the case_location column and add them as seperate columns
     location = dat_clean["case_location"].str.extract(r"\((.+)\)")
