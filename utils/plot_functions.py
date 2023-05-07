@@ -54,19 +54,20 @@ def make_bokeh_line_plot(
     output_file(full_path)
     dat_fire = dat[dat["call_type"].isin(filter_call_types)]
     dat_fire = dat_fire[dat_fire[color_var].notna()]
-    dat_fire["x_var"] = dat_fire[x_var]
+    dat_fire["x_variable"] = dat_fire[x_var]
 
     res = (
-        dat_fire.groupby([color_var, x_var])["on_scene_time"]
+        dat_fire.groupby([color_var, "x_variable"])["on_scene_time"]
         .mean()
         .reset_index(name="mean")
     )
     processed_dat = res.pivot(
-        index=x_var, columns=color_var, values="mean"
+        index="x_variable", columns=color_var, values="mean"
     ).reset_index()
 
     descripts = [d for d in list(dat_fire[color_var].unique()) if not pd.isna(d)]
     src = ColumnDataSource(processed_dat)
+    src.column_names
     viridis = get_viridis_pallette(len(descripts))
     p = figure(
         # x_range=years,
@@ -78,7 +79,7 @@ def make_bokeh_line_plot(
         tools="hover",
         tooltips=[
             (color_var, "$name"),
-            (x_var, "@x_var"),
+            (x_var, "@x_variable"),
             ("Average response time", "@$name"),
         ],
     )
@@ -89,7 +90,7 @@ def make_bokeh_line_plot(
     for indx, i in enumerate(descripts):
         ### Create a line for each district
         lines[i] = p.line(
-            x=x_var,
+            x="x_variable",
             y=i,
             source=src,
             alpha=0.9,
