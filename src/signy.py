@@ -9,7 +9,7 @@ from bokeh.io import show
 # Local
 from utils.make_data import get_data, clean_data, get_neighborhoods
 from utils.const import FIRE_CALL_TYPES
-from utils.plot_functions import make_bokeh_line_plot, make_map
+from utils.plot_functions import make_bokeh_line_plot, make_map, make_bokeh_tabs
 
 """ Importing data """
 dat_raw = get_data()
@@ -33,7 +33,7 @@ fig.show()
 """ Plotting a map of San Fransisco showing average transport time for each neighborhood """
 # Create a column for the on scene time in minutes
 plot_data["transport_time"] = (
-    plot_data["hospital_dttm"] - plot_data["on_scene_dttm"]
+    plot_data["hospital_dttm"] - plot_data["transport_dttm"]
 ).dt.total_seconds() / 60
 
 fig = make_map(
@@ -45,21 +45,34 @@ fig = make_map(
 fig.show()
 
 
-""" Bokeh plot of the avaerage response time by neighborhood over the years"""
+""" Bokeh plot with tabs showing the average response and transport time by neighborhood over the years"""
 plot_dat = dat.copy()
 plot_dat["Year"] = plot_dat["received_dttm"].dt.year  # .astype(str)
 
-p = make_bokeh_line_plot(
+p1 = make_bokeh_line_plot(
     plot_dat,
     "bokeh_neighborhoods.html",
     FIRE_CALL_TYPES,
     "neighborhood",
     "Year",
+    "on_scene_time",
     (2012, 2022),
 )
-show(p)
 
-""" Bokeh plot of the avaerage response time by call type over the years"""
+p2 = make_bokeh_line_plot(
+    plot_dat,
+    "bokeh_neighborhoods.html",
+    FIRE_CALL_TYPES,
+    "neighborhood",
+    "Year",
+    "transport_time",
+    (2012, 2022),
+)
+
+tabs_plot = make_bokeh_tabs([p1, p2])
+show(tabs_plot)
+
+""" Bokeh plot of the average response time by call type over the years and months"""
 plot_dat = dat.copy()
 plot_dat["Year_month"] = plot_dat["received_dttm"].dt.to_period("M").astype(str)
 year_months = [
@@ -72,6 +85,7 @@ p = make_bokeh_line_plot(
     FIRE_CALL_TYPES,
     "call_type",
     "Year_month",
+    "on_scene_time",
     year_months,
 )
 show(p)

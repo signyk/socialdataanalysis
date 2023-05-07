@@ -1,8 +1,11 @@
 """ Importing packages """
 import pandas as pd
 import plotly.express as px
+from typing import List
+import calplot
 
 # Bokeh
+from bokeh.models import TabPanel, Tabs
 from bokeh.models import ColumnDataSource, Legend
 from bokeh.plotting import figure
 from bokeh.io import output_file
@@ -48,6 +51,7 @@ def make_bokeh_line_plot(
     filter_call_types: list = FIRE_CALL_TYPES,
     color_var: str = "neighborhood",
     x_var: str = "Year",
+    y_var: str = "on_scene_time",
     x_range: tuple = (2012, 2022),
 ):
     full_path = "figs/" + filename
@@ -55,9 +59,10 @@ def make_bokeh_line_plot(
     dat_fire = dat[dat["call_type"].isin(filter_call_types)]
     dat_fire = dat_fire[dat_fire[color_var].notna()]
     dat_fire["x_variable"] = dat_fire[x_var]
+    dat_fire["y_variable"] = dat_fire[y_var]
 
     res = (
-        dat_fire.groupby([color_var, "x_variable"])["on_scene_time"]
+        dat_fire.groupby([color_var, "x_variable"])["y_variable"]
         .mean()
         .reset_index(name="mean")
     )
@@ -70,17 +75,16 @@ def make_bokeh_line_plot(
     src.column_names
     viridis = get_viridis_pallette(len(descripts))
     p = figure(
-        # x_range=years,
         x_range=x_range,
         height=500,
         width=800,
-        title="Average response time",
+        title=y_var,
         toolbar_location=None,
         tools="hover",
         tooltips=[
             (color_var, "$name"),
             (x_var, "@x_variable"),
-            ("Average response time", "@$name"),
+            (y_var, "@$name"),
         ],
     )
 
@@ -108,9 +112,39 @@ def make_bokeh_line_plot(
     p.add_layout(legend2, "right")
     p.legend.click_policy = "hide"  # or "mute"
     p.xaxis.axis_label = x_var
-    p.yaxis.axis_label = "Average response time"
+    p.yaxis.axis_label = y_var
     p.y_range.only_visible = True
     p.y_range.start = 0
-    p.sizing_mode = "scale_width"
+    # p.sizing_mode = "scale_width"
 
     return p
+
+
+def make_cal_plot(
+    dat: pd.DataFrame,
+    filter_call_types: list = FIRE_CALL_TYPES,
+    filter_years: list = range(2017, 2022),
+    column_name: str = "on_scene_time",
+    title: str = "On Scene Time",
+):
+    caldat = dat.copy()
+    caldat = caldat[caldat["call_type"].isin(filter_call_types)]
+    caldat = caldat[caldat["received_dttm"].dt.year.isin(filter_years)]
+    # Select the relevant columns ("received_dttm" and column_name)
+    caldat = caldat[["received_dttm", column_name]]
+
+    dat["received_dttm"].value_counts(sort=False)
+    calplot.calplot(
+        data=dat["Datetime"].value_counts(sort=False),
+        how="mean",
+        cmap="YlGn",
+        suptitle=title,
+    )
+
+
+def make_bokeh_tabs(figs: List[figure]):
+    """Creates a tabbed layout of bokeh figures"""
+    tabs = Tabs(
+        tabs=[TabPanel(child=fig, title=f"Tab {i}") for i, fig in enumerate(figs)]
+    )
+    return tabs

@@ -15,6 +15,7 @@ plotly = "^5.14.1"
 matplotlib = "^3.7.1"
 seaborn = "^0.12.2"
 statsmodels = "^0.13.5"
+calplot = "^0.1.7.5"
 
 
 [tool.poetry.group.dev.dependencies]
