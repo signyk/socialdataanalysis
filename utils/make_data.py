@@ -14,9 +14,9 @@ def create_data():
     # Convert Call Date to datetime
     dat["Call Date"] = pd.to_datetime(dat["Call Date"], format="%m/%d/%Y")
 
-    # Only keep data from 2012 to 2023
+    # Only keep data from 2017 to 2023
     dat = dat.loc[dat["Call Date"] < dt.datetime(2023, 1, 1)]
-    dat = dat.loc[dat["Call Date"] >= dt.datetime(2012, 1, 1)]
+    dat = dat.loc[dat["Call Date"] >= dt.datetime(2017, 1, 1)]
 
     # Convert the rest of the date columns to datetime
     dat["Watch Date"] = pd.to_datetime(dat["Watch Date"], format="%m/%d/%Y")

@@ -59,7 +59,7 @@ def make_bokeh_line_plot(
     color_var: str = "neighborhood",
     x_var: str = "Year",
     y_var: str = "on_scene_time",
-    x_range: tuple = (2012, 2022),
+    x_range: tuple = (2017, 2022),
     notebook: bool = False,
 ):
     full_path = "figs/" + filename

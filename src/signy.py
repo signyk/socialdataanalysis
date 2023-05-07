@@ -58,7 +58,7 @@ p1 = make_bokeh_line_plot(
     "neighborhood",
     "Year",
     "on_scene_time",
-    (2012, 2022),
+    (2017, 2022),
 )
 
 p2 = make_bokeh_line_plot(
@@ -68,7 +68,7 @@ p2 = make_bokeh_line_plot(
     "neighborhood",
     "Year",
     "transport_time",
-    (2012, 2022),
+    (2017, 2022),
 )
 output_file("figs/response_transport_neighborhood_years.html")
 tabs_plot = make_bokeh_tabs([p1, p2])
@@ -79,7 +79,7 @@ show(tabs_plot)
 plot_dat = dat.copy()
 plot_dat["Year_month"] = plot_dat["received_dttm"].dt.to_period("M").astype(str)
 year_months = [
-    "-".join([str(i), str(j).zfill(2)]) for i in range(2012, 2022) for j in range(1, 13)
+    "-".join([str(i), str(j).zfill(2)]) for i in range(2017, 2022) for j in range(1, 13)
 ]
 
 p = make_bokeh_line_plot(
