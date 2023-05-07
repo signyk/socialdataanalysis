@@ -31,7 +31,7 @@ def make_map(
         locations="Neighborhood",
         color=scale_name,
         color_continuous_scale="Viridis",
-        range_color=(0, max(mean_response[scale_name])),
+        range_color=(min(mean_response[scale_name]), max(mean_response[scale_name])),
         mapbox_style="carto-positron",
         zoom=11,
         center={"lat": 37.773972, "lon": -122.431297},
