@@ -9,7 +9,7 @@ import seaborn as sns
 from bokeh.models import TabPanel, Tabs
 from bokeh.models import ColumnDataSource, Legend
 from bokeh.plotting import figure
-from bokeh.io import output_file
+from bokeh.io import output_file, output_notebook
 
 # Local
 from utils.help_functions import get_viridis_pallette, format_string
@@ -60,9 +60,13 @@ def make_bokeh_line_plot(
     x_var: str = "Year",
     y_var: str = "on_scene_time",
     x_range: tuple = (2012, 2022),
+    notebook: bool = False,
 ):
     full_path = "figs/" + filename
-    output_file(full_path)
+    if notebook:
+        output_notebook()
+    else:
+        output_file(full_path)
     dat_fire = dat[dat["call_type"].isin(filter_call_types)]
     dat_fire = dat_fire[dat_fire[color_var].notna()]
     dat_fire["x_variable"] = dat_fire[x_var]
@@ -165,12 +169,13 @@ def make_bokeh_tabs(figs: List[figure]):
 def make_boxplot(
     dat: pd.DataFrame,
     filter_call_types: list = ["Medical Incident"],
-    filter_years: list = range(2017, 2023),
+    filter_years: list = None,
     x_var: str = "neighborhood",
     y_var: str = "on_scene_time",
 ):
     plot_dat = dat[dat["call_type"].isin(filter_call_types)]
-    plot_dat = plot_dat[plot_dat["received_dttm"].dt.year.isin(filter_years)]
+    if filter_years:
+        plot_dat = plot_dat[plot_dat["received_dttm"].dt.year.isin(filter_years)]
     b = sns.boxplot(data=plot_dat, x=x_var, y=y_var, showfliers=False)
     b.set(xlabel=format_string(x_var), ylabel=format_string(y_var))
     b.set_xticklabels(b.get_xticklabels(), rotation=90)

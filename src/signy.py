@@ -89,7 +89,7 @@ p = make_bokeh_line_plot(
 )
 show(p)
 
-""" Bokeh plot of the average response time by call type over the years and months"""
+""" Cal plot of the average response time by call type over the years and months"""
 p = make_cal_plot(
     dat=dat,
     filter_call_types=["Medical Incident"],
@@ -98,7 +98,7 @@ p = make_cal_plot(
 )
 p.show()
 
-""" Bokeh plot of the average transport time by call type over the years and months"""
+""" Cal plot of the average transport time by call type over the years and months"""
 p = make_cal_plot(
     dat=dat,
     filter_call_types=["Medical Incident"],
