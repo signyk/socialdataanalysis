@@ -16,6 +16,7 @@ matplotlib = "^3.7.1"
 seaborn = "^0.12.2"
 statsmodels = "^0.13.5"
 calplot = "^0.1.7.5"
+scikit-learn = "^1.2.2"
 
 
 [tool.poetry.group.dev.dependencies]
