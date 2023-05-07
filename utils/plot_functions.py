@@ -122,8 +122,8 @@ def make_bokeh_line_plot(
 
 def make_cal_plot(
     dat: pd.DataFrame,
-    filter_call_types: list = FIRE_CALL_TYPES,
-    filter_years: list = range(2017, 2022),
+    filter_call_types: list = ["Medical Incident"],
+    filter_years: list = range(2017, 2023),
     column_name: str = "on_scene_time",
     title: str = "On Scene Time",
 ):
@@ -132,14 +132,19 @@ def make_cal_plot(
     caldat = caldat[caldat["received_dttm"].dt.year.isin(filter_years)]
     # Select the relevant columns ("received_dttm" and column_name)
     caldat = caldat[["received_dttm", column_name]]
-
-    dat["received_dttm"].value_counts(sort=False)
-    calplot.calplot(
-        data=dat["Datetime"].value_counts(sort=False),
+    # Set the index to be the date
+    caldat = caldat.set_index("received_dttm")
+    # Make the plot
+    fig, ax = calplot.calplot(
+        data=caldat[column_name],
         how="mean",
-        cmap="YlGn",
+        cmap="YlGnBu",
+        # fillcolor="grey",
         suptitle=title,
+        linewidth=0.2,
     )
+
+    return fig
 
 
 def make_bokeh_tabs(figs: List[figure]):

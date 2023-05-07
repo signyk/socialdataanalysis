@@ -9,7 +9,12 @@ from bokeh.io import show
 # Local
 from utils.make_data import get_data, clean_data, get_neighborhoods
 from utils.const import FIRE_CALL_TYPES
-from utils.plot_functions import make_bokeh_line_plot, make_map, make_bokeh_tabs
+from utils.plot_functions import (
+    make_bokeh_line_plot,
+    make_map,
+    make_bokeh_tabs,
+    make_cal_plot,
+)
 
 """ Importing data """
 dat_raw = get_data()
@@ -89,3 +94,23 @@ p = make_bokeh_line_plot(
     year_months,
 )
 show(p)
+
+""" Bokeh plot of the average response time by call type over the years and months"""
+p = make_cal_plot(
+    dat=dat,
+    filter_call_types=["Medical Incident"],
+    filter_years=range(2017, 2023),
+    column_name="on_scene_time",
+    title="Average response time",
+)
+p.show()
+
+""" Bokeh plot of the average transport time by call type over the years and months"""
+p = make_cal_plot(
+    dat=dat,
+    filter_call_types=["Medical Incident"],
+    filter_years=range(2017, 2023),
+    column_name="transport_time",
+    title="Average transport time",
+)
+p.show()
