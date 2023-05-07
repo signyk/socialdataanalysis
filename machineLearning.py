@@ -181,3 +181,58 @@ anova_results = anova_lm(model)
 
 # Interpret the results
 print(anova_results)
+
+
+######################
+# Using Long and Lat #
+######################
+
+## Virðist vera að koma best út
+
+dat_raw = get_data()
+dat = clean_data(dat_raw)
+
+dat_filt = dat[dat["call_type"].isin(["Medical Incident"])]
+# create bins for the hour of the day
+bins = [-1, 6, 12, 18, 24]
+labels = ["Night", "Morning", "Afternoon", "Evening"]
+dat_filt["period_of_day"] = pd.cut(dat_filt["hour"], bins=bins, labels=labels)
+dat_filt = dat_filt[dat_filt["call_date"].dt.year >= 2017]
+dat_mini = dat_filt.sample(n=450000)
+
+dat_mini = dat_mini[dat_mini["latitude"].notna()]
+dat_mini = dat_mini[dat_mini["longitude"].notna()]
+dat_mini.dropna(inplace=True)
+
+X = dat_mini[
+    ["latitude", "longitude", "period_of_day", "Priority", "battalion", "station_area"]
+]
+X = pd.get_dummies(
+    X, columns=["Priority", "battalion", "station_area", "period_of_day"]
+)
+y = dat_mini["on_scene_time"]
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Fit linear regression model to training data
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Evaluate model performance on testing data
+score = model.score(X_test, y_test)
+print("R-squared score: ", score)
+
+
+#########
+
+model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
+model.fit(X_train, y_train)
+
+# Evaluate model performance on testing data
+score = model.score(X_test, y_test)
+print("R-squared score: ", score)
+
+np.argmax(model.feature_importances_)
