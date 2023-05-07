@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 from typing import List
 import calplot
+import seaborn as sns
 
 # Bokeh
 from bokeh.models import TabPanel, Tabs
@@ -11,35 +12,41 @@ from bokeh.plotting import figure
 from bokeh.io import output_file
 
 # Local
-from utils.help_functions import get_viridis_pallette
-from utils.const import FIRE_CALL_TYPES
+from utils.help_functions import get_viridis_pallette, format_string
+from utils.const import FILTER_CALL_TYPES
 
 
 def make_map(
     dat: pd.DataFrame,
     neighborhoods: dict,
     column_to_plot: str = "on_scene_time",
-    scale_name: str = "On Scene Time",
 ):
     """Plotting a map of San Fransisco showing average response time for each neighborhood"""
     mean_response = (
         dat.groupby("neighborhood", as_index=False)[column_to_plot]
         .mean()
-        .rename(columns={"neighborhood": "Neighborhood", column_to_plot: scale_name})
+        .rename(
+            columns={
+                "neighborhood": "Neighborhood",
+            }
+        )
     )
 
     fig = px.choropleth_mapbox(
         mean_response,
         geojson=neighborhoods,
         locations="Neighborhood",
-        color=scale_name,
+        color=column_to_plot,
         color_continuous_scale="Viridis",
-        range_color=(min(mean_response[scale_name]), max(mean_response[scale_name])),
+        range_color=(
+            min(mean_response[column_to_plot]),
+            max(mean_response[column_to_plot]),
+        ),
         mapbox_style="carto-positron",
         zoom=11,
         center={"lat": 37.773972, "lon": -122.431297},
         opacity=0.5,
-        # labels={"On Scene Time": "On Scene Time"},
+        labels={column_to_plot: format_string(column_to_plot)},
     )
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     return fig
@@ -48,7 +55,7 @@ def make_map(
 def make_bokeh_line_plot(
     dat: pd.DataFrame,
     filename: str = "bokeh1.html",
-    filter_call_types: list = FIRE_CALL_TYPES,
+    filter_call_types: list = FILTER_CALL_TYPES,
     color_var: str = "neighborhood",
     x_var: str = "Year",
     y_var: str = "on_scene_time",
@@ -78,13 +85,13 @@ def make_bokeh_line_plot(
         x_range=x_range,
         height=500,
         width=800,
-        title=y_var,
+        title=format_string(y_var),
         toolbar_location=None,
         tools="hover",
         tooltips=[
             (color_var, "$name"),
-            (x_var, "@x_variable"),
-            (y_var, "@$name"),
+            (format_string(x_var), "@x_variable"),
+            (format_string(y_var), "@$name"),
         ],
     )
 
@@ -111,8 +118,8 @@ def make_bokeh_line_plot(
     p.add_layout(legend1, "right")
     p.add_layout(legend2, "right")
     p.legend.click_policy = "hide"  # or "mute"
-    p.xaxis.axis_label = x_var
-    p.yaxis.axis_label = y_var
+    p.xaxis.axis_label = format_string(x_var)
+    p.yaxis.axis_label = format_string(y_var)
     p.y_range.only_visible = True
     p.y_range.start = 0
     # p.sizing_mode = "scale_width"
@@ -125,7 +132,6 @@ def make_cal_plot(
     filter_call_types: list = ["Medical Incident"],
     filter_years: list = range(2017, 2023),
     column_name: str = "on_scene_time",
-    title: str = "On Scene Time",
 ):
     caldat = dat.copy()
     caldat = caldat[caldat["call_type"].isin(filter_call_types)]
@@ -140,7 +146,7 @@ def make_cal_plot(
         how="mean",
         cmap="YlGnBu",
         # fillcolor="grey",
-        suptitle=title,
+        suptitle=format_string(column_name),
         linewidth=0.2,
     )
 
@@ -149,7 +155,24 @@ def make_cal_plot(
 
 def make_bokeh_tabs(figs: List[figure]):
     """Creates a tabbed layout of bokeh figures"""
-    tabs = Tabs(
-        tabs=[TabPanel(child=fig, title=f"Tab {i}") for i, fig in enumerate(figs)]
-    )
+    # Set tab titles as the figure titles
+    tabs = [TabPanel(child=fig, title=fig.title.text) for fig in figs]
+    # Create a Tabs layout
+    tabs = Tabs(tabs=tabs)
     return tabs
+
+
+def make_boxplot(
+    dat: pd.DataFrame,
+    filter_call_types: list = ["Medical Incident"],
+    filter_years: list = range(2017, 2023),
+    x_var: str = "neighborhood",
+    y_var: str = "on_scene_time",
+):
+    plot_dat = dat[dat["call_type"].isin(filter_call_types)]
+    plot_dat = plot_dat[plot_dat["received_dttm"].dt.year.isin(filter_years)]
+    b = sns.boxplot(data=plot_dat, x=x_var, y=y_var, showfliers=False)
+    b.set(xlabel=format_string(x_var), ylabel=format_string(y_var))
+    b.set_xticklabels(b.get_xticklabels(), rotation=90)
+
+    return b

@@ -64,7 +64,9 @@ def get_data():
         "Hospital DtTm",
         "Available DtTm",
     ]
-    dat = pd.read_csv("data/fireIncidents_clean.csv", parse_dates=parse_dates)
+    dat = pd.read_csv(
+        "data/fireIncidents_clean.csv", parse_dates=parse_dates, low_memory=False
+    )
     return dat
 
 

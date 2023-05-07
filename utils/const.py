@@ -1,4 +1,4 @@
-FIRE_CALL_TYPES = [
+FILTER_CALL_TYPES = [
     "Outside Fire",
     "Structure Fire",
     "Vehicle Fire",

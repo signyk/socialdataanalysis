@@ -8,7 +8,7 @@ from bokeh.io import show
 
 # Local
 from utils.make_data import get_data, clean_data, get_neighborhoods
-from utils.const import FIRE_CALL_TYPES
+from utils.const import FILTER_CALL_TYPES
 from utils.plot_functions import (
     make_bokeh_line_plot,
     make_map,
@@ -27,12 +27,7 @@ print(dat.columns)
 """ Plotting a map of San Fransisco showing average response time for each neighborhood """
 plot_data = dat.copy()
 
-fig = make_map(
-    plot_data,
-    neighborhoods,
-    column_to_plot="on_scene_time",
-    scale_name="On Scene Time",
-)
+fig = make_map(plot_data, neighborhoods, column_to_plot="on_scene_time")
 fig.show()
 
 """ Plotting a map of San Fransisco showing average transport time for each neighborhood """
@@ -45,7 +40,6 @@ fig = make_map(
     plot_data,
     neighborhoods,
     column_to_plot="transport_time",
-    scale_name="Transport Time",
 )
 fig.show()
 
@@ -57,7 +51,7 @@ plot_dat["Year"] = plot_dat["received_dttm"].dt.year  # .astype(str)
 p1 = make_bokeh_line_plot(
     plot_dat,
     "bokeh_neighborhoods.html",
-    FIRE_CALL_TYPES,
+    FILTER_CALL_TYPES,
     "neighborhood",
     "Year",
     "on_scene_time",
@@ -67,7 +61,7 @@ p1 = make_bokeh_line_plot(
 p2 = make_bokeh_line_plot(
     plot_dat,
     "bokeh_neighborhoods.html",
-    FIRE_CALL_TYPES,
+    FILTER_CALL_TYPES,
     "neighborhood",
     "Year",
     "transport_time",
@@ -87,7 +81,7 @@ year_months = [
 p = make_bokeh_line_plot(
     plot_dat,
     "bokeh_call_types.html",
-    FIRE_CALL_TYPES,
+    FILTER_CALL_TYPES,
     "call_type",
     "Year_month",
     "on_scene_time",
@@ -101,7 +95,6 @@ p = make_cal_plot(
     filter_call_types=["Medical Incident"],
     filter_years=range(2017, 2023),
     column_name="on_scene_time",
-    title="Average response time",
 )
 p.show()
 
@@ -111,6 +104,5 @@ p = make_cal_plot(
     filter_call_types=["Medical Incident"],
     filter_years=range(2017, 2023),
     column_name="transport_time",
-    title="Average transport time",
 )
 p.show()
