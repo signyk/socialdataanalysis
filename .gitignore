@@ -13,6 +13,9 @@ __pycache__/
 # vscode
 .vscode/
 
+# Figures
+figs/
+
 # C extensions
 *.so
 
