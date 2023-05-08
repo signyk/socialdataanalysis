@@ -70,7 +70,8 @@ p = figure(
     x_range=x_range,
     height=500,
     width=800,
-    title="Number of calls per day",
+    toolbar_location=None,
+    title="Average number of calls per day",
 )
 
 # Add a line to the plot
@@ -85,7 +86,7 @@ p.xaxis.formatter = DatetimeTickFormatter(days="%d %B %Y")
 # Add tooltip to the plot with the date and number of calls
 hover = HoverTool()
 hover.tooltips = [
-    ("Date", "@Year_month{%b %Y}"),
+    ("Period", "@Year_month{%b %Y}"),
     ("Average number of calls", "@Count"),
 ]
 hover.formatters = {"@Year_month": "datetime"}
