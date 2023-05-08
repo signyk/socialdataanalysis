@@ -288,17 +288,28 @@ p.add_layout(p.legend[0], "right")
 output_file("figs/split_time.html")
 show(p)
 
-""" Bokeh plot showing the average response time by time of day and day over the years """
+""" Bokeh plot showing the average response and transport time by time of day and day over the years """
 plot_dat = dat.copy()
 plot_dat["Year"] = plot_dat["received_dttm"].dt.year  # .astype(str)
 
-p = make_bokeh_line_plot(
+p1 = make_bokeh_line_plot(
     plot_dat,
     ["Medical Incident"],
     "period_of_day",
     "Year",
     "on_scene_time",
+    show_all_legend=True,
 )
 
-output_file("figs/response_day_period.html")
-show(p)
+p2 = make_bokeh_line_plot(
+    plot_dat,
+    ["Medical Incident"],
+    "period_of_day",
+    "Year",
+    "transport_time",
+    show_all_legend=True,
+)
+
+output_file("figs/response_transport_day_period.html")
+tabs_plot = make_bokeh_tabs([p1, p2])
+show(tabs_plot)

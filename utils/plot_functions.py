@@ -60,6 +60,7 @@ def make_bokeh_line_plot(
     x_var: str = "Year",
     y_var: str = "on_scene_time",
     x_range: tuple = (2017, 2022),
+    show_all_legend: bool = False,
 ):
     dat_fire = dat[dat["call_type"].isin(filter_call_types)]
     dat_fire = dat_fire[dat_fire[color_var].notna()]
@@ -109,7 +110,8 @@ def make_bokeh_line_plot(
             name=i,
         )
         items.append((i, [lines[i]]))
-        lines[i].visible = True if i == list(descripts)[0] else False
+        if not show_all_legend:
+            lines[i].visible = True if i == list(descripts)[0] else False
 
     legend1 = Legend(items=items[:21], location=(0, 10))
     legend2 = Legend(items=items[21:], location=(0, 10))
