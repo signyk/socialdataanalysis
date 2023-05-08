@@ -29,8 +29,10 @@ dat = dat_all_call_types[dat_all_call_types["call_type"] == "Medical Incident"]
 """ Machine Learning """
 # Create a sample of the data to speed up the process
 dat_mini = dat.sample(n=100000)
+# Create the target variable and the features
+dat_mini["Year"] = dat_mini["call_date"].dt.year
 y = dat_mini["on_scene_time"]
-X_dat = dat_mini[["neighborhood", "period_of_day"]]
+X_dat = dat_mini[["neighborhood", "period_of_day", "Year"]]
 X_dat = X_dat.reset_index(drop=True)
 
 # Handle categorical variables
@@ -86,7 +88,7 @@ show(p)
 lr = LinearRegression()
 
 # Create an instance of RFE
-rfe = RFE(lr, n_features_to_select=5)
+rfe = RFE(lr, n_features_to_select=10)
 
 # Fit RFE on the training data
 rfe.fit(X_dat, y)

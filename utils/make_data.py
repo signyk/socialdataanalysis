@@ -21,29 +21,26 @@ def create_data():
     # Convert the rest of the date columns to datetime
     dat["Watch Date"] = pd.to_datetime(dat["Watch Date"], format="%m/%d/%Y")
     dat["Received DtTm"] = pd.to_datetime(
-        dat["Received DtTm"], format="%m/%d/%Y %H:%M:%S %p"
+        dat["Received DtTm"], format="%m/%d/%Y %I:%M:%S %p"
     )
     dat["Entry DtTm"] = pd.to_datetime(dat["Entry DtTm"], format="%m/%d/%Y %H:%M:%S %p")
     dat["Dispatch DtTm"] = pd.to_datetime(
-        dat["Dispatch DtTm"], format="%m/%d/%Y %H:%M:%S %p"
-    )
-    dat["Dispatch DtTm"] = pd.to_datetime(
-        dat["Dispatch DtTm"], format="%m/%d/%Y %H:%M:%S %p"
+        dat["Dispatch DtTm"], format="%m/%d/%Y %I:%M:%S %p"
     )
     dat["Response DtTm"] = pd.to_datetime(
-        dat["Response DtTm"], format="%m/%d/%Y %H:%M:%S %p"
+        dat["Response DtTm"], format="%m/%d/%Y %I:%M:%S %p"
     )
     dat["On Scene DtTm"] = pd.to_datetime(
-        dat["On Scene DtTm"], format="%m/%d/%Y %H:%M:%S %p"
+        dat["On Scene DtTm"], format="%m/%d/%Y %I:%M:%S %p"
     )
     dat["Transport DtTm"] = pd.to_datetime(
-        dat["Transport DtTm"], format="%m/%d/%Y %H:%M:%S %p"
+        dat["Transport DtTm"], format="%m/%d/%Y %I:%M:%S %p"
     )
     dat["Hospital DtTm"] = pd.to_datetime(
-        dat["Hospital DtTm"], format="%m/%d/%Y %H:%M:%S %p"
+        dat["Hospital DtTm"], format="%m/%d/%Y %I:%M:%S %p"
     )
     dat["Available DtTm"] = pd.to_datetime(
-        dat["Available DtTm"], format="%m/%d/%Y %H:%M:%S %p"
+        dat["Available DtTm"], format="%m/%d/%Y %I:%M:%S %p"
     )
 
     # write out a csv file called "fireIncidents_clean.csv"
@@ -174,9 +171,13 @@ def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
         dat_clean["hospital_dttm"] - dat_clean["transport_dttm"]
     ).dt.total_seconds() / 60
 
-    # Drop rows where transport_time is unlikely
-    dat_clean = dat_clean.loc[dat_clean["transport_time"] >= 0]
-    dat_clean = dat_clean.loc[dat_clean["transport_time"] <= 720]
+    # Drop rows where transport_time is unlikely (keep rows with transport_time NaN)
+    dat_clean = dat_clean.loc[
+        (dat_clean["transport_time"] >= 0) | (dat_clean["transport_time"].isna())
+    ]
+    dat_clean = dat_clean.loc[
+        (dat_clean["transport_time"] <= 720) | (dat_clean["transport_time"].isna())
+    ]
 
     return dat_clean
 

@@ -29,6 +29,30 @@ neighborhoods = get_neighborhoods()
 # print the names of the columns of the data
 print(dat.columns)
 
+"""" scatter plot of the on_scene time of all obsverations """
+
+plot_dat = dat_all_years.copy()
+# Create a column with row numbers
+plot_dat["row_num"] = range(1, len(plot_dat) + 1)
+# Plot the scatter plot
+fig = px.scatter(
+    plot_dat,
+    x="row_num",
+    y="on_scene_time",
+    title="On-scene time of all observations",
+    labels={"row_num": "Row number", "on_scene_time": "On-scene time"},
+)
+fig.update_layout(
+    xaxis=dict(
+        tickmode="array",
+        tickvals=[i for i in range(0, len(plot_dat), 100000)],
+        # text on the form 100k etc.
+        ticktext=[str(i)[:3] + "k" for i in range(0, len(plot_dat), 100000)],
+    )
+)
+fig.show()
+
+
 """ Plotting the average number of calls per day per month of each year """
 plot_dat = dat.copy()
 plot_dat = plot_dat.groupby(["call_date"]).size().reset_index(name="Count")
@@ -197,6 +221,14 @@ split_time_data["travel_time"] = (
     split_time_data["on_scene_dttm"] - split_time_data["dispatch_dttm"]
 ).dt.total_seconds() / 60
 
+# Remove values that are negative
+split_time_data = split_time_data[
+    (split_time_data["intake_time"] >= 0)
+    & (split_time_data["queue_time"] >= 0)
+    & (split_time_data["travel_time"] >= 0)
+]
+
+
 # Create the year variable
 split_time_data["Year"] = split_time_data["received_dttm"].dt.year.astype(str)
 
@@ -253,4 +285,19 @@ p.legend.orientation = "vertical"
 p.add_layout(p.legend[0], "right")
 
 output_file("figs/split_time.html")
+show(p)
+
+""" Bokeh plot showing the average response time by time of day and day over the years """
+plot_dat = dat.copy()
+plot_dat["Year"] = plot_dat["received_dttm"].dt.year  # .astype(str)
+
+p = make_bokeh_line_plot(
+    plot_dat,
+    ["Medical Incident"],
+    "period_of_day",
+    "Year",
+    "on_scene_time",
+)
+
+output_file("figs/response_day_period.html")
 show(p)

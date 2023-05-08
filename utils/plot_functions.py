@@ -87,7 +87,7 @@ def make_bokeh_line_plot(
         toolbar_location=None,
         tools="hover",
         tooltips=[
-            (color_var, "$name"),
+            (format_string(color_var), "$name"),
             (format_string(x_var), "@x_variable"),
             (format_string(y_var), "@$name"),
         ],
