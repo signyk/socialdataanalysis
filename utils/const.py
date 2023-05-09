@@ -11,3 +11,11 @@ FILTER_CALL_TYPES = [
     "Traffic Collision",
     "Elevator / Escalator Rescue",
 ]
+
+INTERESTING_NEIGHBORHOODS = [
+    "Bayview Hunters Point",
+    "Treasure Island",
+    "Tenderloin",
+    "Lakeshore",
+    "Mission",
+]

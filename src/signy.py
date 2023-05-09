@@ -1,5 +1,6 @@
 """ Importing packages """
 import plotly.express as px
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -10,8 +11,14 @@ from bokeh.models import ColumnDataSource, HoverTool, DatetimeTickFormatter
 from bokeh.io import show, output_file
 
 # Local
-from utils.make_data import get_data, clean_data, get_neighborhoods, filter_data_years
-from utils.const import FILTER_CALL_TYPES
+from utils.make_data import (
+    get_data,
+    clean_data,
+    get_neighborhoods,
+    filter_data_years,
+    get_hospitals,
+)
+from utils.const import FILTER_CALL_TYPES, INTERESTING_NEIGHBORHOODS
 from utils.plot_functions import (
     make_bokeh_line_plot,
     make_map,
@@ -25,6 +32,7 @@ dat_raw = get_data()
 dat_all_years = clean_data(dat_raw)
 dat = filter_data_years(dat_all_years, 2017, 2023)
 neighborhoods = get_neighborhoods()
+hospitals = get_hospitals()
 
 # print the names of the columns of the data
 print(dat.columns)
@@ -118,13 +126,30 @@ fig = make_map(
     neighborhoods,
     column_to_plot="transport_time",
 )
-# fig.show()
-fig.write_html("figs/map_transport_neighborhood.html")
+
+fig2 = go.Figure(fig)
+# add marker for the location of all hospitals
+fig2.add_trace(
+    go.Scattermapbox(
+        lat=hospitals["latitude"],
+        lon=hospitals["longitude"],
+        mode="markers",
+        marker=go.scattermapbox.Marker(
+            size=10,
+            color="red",
+        ),
+        text=hospitals["name"],
+        hoverinfo="text",
+    )
+)
+
+# fig2.show()
+fig2.write_html("figs/map_transport_neighborhood.html")
 
 
 """ Bokeh plot with tabs showing the average response and transport time by neighborhood over the years"""
 plot_dat = dat.copy()
-plot_dat["Year"] = plot_dat["received_dttm"].dt.year  # .astype(str)
+plot_dat["Year"] = plot_dat["received_dttm"].dt.year
 
 p1 = make_bokeh_line_plot(
     plot_dat,
@@ -132,6 +157,7 @@ p1 = make_bokeh_line_plot(
     "neighborhood",
     "Year",
     "on_scene_time",
+    init_legend_items=INTERESTING_NEIGHBORHOODS,
 )
 
 p2 = make_bokeh_line_plot(
@@ -140,6 +166,7 @@ p2 = make_bokeh_line_plot(
     "neighborhood",
     "Year",
     "transport_time",
+    init_legend_items=INTERESTING_NEIGHBORHOODS,
 )
 output_file("figs/response_transport_neighborhood_years.html")
 tabs_plot = make_bokeh_tabs([p1, p2])
@@ -158,6 +185,7 @@ p = make_bokeh_line_plot(
     "Year_month",
     "on_scene_time",
     (min(year_months), max(year_months)),
+    init_legend_items=["Medical Incident", "Structure Fire", "Traffic Collision"],
 )
 
 # Format tooltip to show the date as a string
@@ -298,7 +326,7 @@ p1 = make_bokeh_line_plot(
     "period_of_day",
     "Year",
     "on_scene_time",
-    show_all_legend=True,
+    init_legend_items=plot_dat["period_of_day"].unique().tolist(),
 )
 
 p2 = make_bokeh_line_plot(
@@ -307,7 +335,7 @@ p2 = make_bokeh_line_plot(
     "period_of_day",
     "Year",
     "transport_time",
-    show_all_legend=True,
+    init_legend_items=plot_dat["period_of_day"].unique().tolist(),
 )
 
 output_file("figs/response_transport_day_period.html")

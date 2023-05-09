@@ -60,7 +60,7 @@ def make_bokeh_line_plot(
     x_var: str = "Year",
     y_var: str = "on_scene_time",
     x_range: tuple = (2017, 2022),
-    show_all_legend: bool = False,
+    init_legend_items: List[str] = [],
 ):
     dat_fire = dat[dat["call_type"].isin(filter_call_types)]
     dat_fire = dat_fire[dat_fire[color_var].notna()]
@@ -96,6 +96,8 @@ def make_bokeh_line_plot(
 
     items = []  # for the custom legend
     lines = {}  # to store the lines
+    if len(init_legend_items) < 1:
+        init_legend_items = [descripts[0]]
 
     for indx, i in enumerate(descripts):
         ### Create a line for each district
@@ -110,8 +112,7 @@ def make_bokeh_line_plot(
             name=i,
         )
         items.append((i, [lines[i]]))
-        if not show_all_legend:
-            lines[i].visible = True if i == list(descripts)[0] else False
+        lines[i].visible = True if i in init_legend_items else False
 
     legend1 = Legend(items=items[:21], location=(0, 10))
     legend2 = Legend(items=items[21:], location=(0, 10))

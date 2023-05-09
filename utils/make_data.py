@@ -78,6 +78,40 @@ def get_neighborhoods():
     return neighborhoods
 
 
+def get_hospitals():
+    """Read in the hospitals location data and clean it"""
+    hospitals = pd.read_csv("data/hospitals.csv")
+
+    "Clean up the location column"
+    # extract the latitude and longitude from the case_location column and add them as seperate columns
+    location = hospitals["Location"].str.extract(r"\((.+)\)")
+    hospitals["latitude"] = location[0].str.split(", ").str[0]
+    hospitals["longitude"] = location[0].str.split(", ").str[1]
+    # convert the latitude and longitude columns to numeric
+    hospitals["latitude"] = pd.to_numeric(hospitals["latitude"])
+    hospitals["longitude"] = pd.to_numeric(hospitals["longitude"])
+
+    # Filter to only include hospitals
+    hospitals = hospitals.loc[hospitals["Services"] == "Hospital"]
+
+    # Only include the name, latitude, and longitude columns
+    hospitals = hospitals[["Facility Name", "latitude", "longitude"]]
+
+    # Rename the columns
+    hospitals = hospitals.rename(
+        columns={
+            "Facility Name": "name",
+            "latitude": "latitude",
+            "longitude": "longitude",
+        }
+    )
+
+    # Convert to a dictionary with the column name as key and the values as a list of values
+    hospitals = hospitals.to_dict(orient="list")
+
+    return hospitals
+
+
 def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
     "Dropping columns"
     # Drop the columns that are not needed
