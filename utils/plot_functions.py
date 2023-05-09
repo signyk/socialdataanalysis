@@ -20,7 +20,7 @@ from utils.const import FILTER_CALL_TYPES
 def make_map(
     dat: pd.DataFrame,
     neighborhoods: dict,
-    column_to_plot: str = "on_scene_time",
+    column_to_plot: str = "response_time",
 ):
     """Plotting a map of San Fransisco showing average response time for each neighborhood"""
     mean_response = (
@@ -58,7 +58,7 @@ def make_bokeh_line_plot(
     filter_call_types: list = FILTER_CALL_TYPES,
     color_var: str = "neighborhood",
     x_var: str = "Year",
-    y_var: str = "on_scene_time",
+    y_var: str = "response_time",
     x_range: tuple = (2017, 2022),
     init_legend_items: List[str] = [],
 ):
@@ -133,7 +133,7 @@ def make_cal_plot(
     dat: pd.DataFrame,
     filter_call_types: list = ["Medical Incident"],
     filter_years: list = range(2017, 2023),
-    column_name: str = "on_scene_time",
+    column_name: str = "response_time",
 ):
     caldat = dat.copy()
     caldat = caldat[caldat["call_type"].isin(filter_call_types)]
@@ -169,7 +169,7 @@ def make_boxplot(
     filter_call_types: list = ["Medical Incident"],
     filter_years: list = None,
     x_var: str = "neighborhood",
-    y_var: str = "on_scene_time",
+    y_var: str = "response_time",
 ):
     plot_dat = dat[dat["call_type"].isin(filter_call_types)]
     if filter_years:

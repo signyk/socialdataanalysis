@@ -18,7 +18,7 @@ dat = clean_data(dat_raw)
 print(dat.columns)
 
 
-# Splittad on_scene_time
+# Splittad response_time
 split_time_data = dat.copy()
 split_time_data["intake_time"] = (
     split_time_data["entry_dttm"] - split_time_data["received_dttm"]
@@ -92,13 +92,13 @@ show(p2)
 ## AÐRAR VANGAVELTUR
 
 get_on_scene_map(dat)
-dat = dat.loc[dat["on_scene_time"] >= 0]
-dat = dat.loc[dat["on_scene_time"] < 1440]
+dat = dat.loc[dat["response_time"] >= 0]
+dat = dat.loc[dat["response_time"] < 1440]
 battalions = dat["battalion"].unique()
 
 
 # We look at resolution in each district
-av = dat.groupby("battalion")["on_scene_time"].mean()
+av = dat.groupby("battalion")["response_time"].mean()
 av.plot.bar()
 plt.show()
 
@@ -129,7 +129,7 @@ save(heatm)
 from scipy import stats
 import statsmodels.stats.multicomp as mc
 
-comp1 = mc.MultiComparison(dat["on_scene_time"], dat["neighborhood"])
+comp1 = mc.MultiComparison(dat["response_time"], dat["neighborhood"])
 tbl, a1, a2 = comp1.allpairtest(stats.ttest_ind, method="bonf")
 
 
@@ -159,7 +159,7 @@ dat_fire = dat_fire[dat_fire["neighborhood"].notna()]
 dat_fire["Year"] = dat_fire["received_dttm"].dt.year
 
 res = (
-    dat_fire.groupby(["neighborhood", "Year"])["on_scene_time"]
+    dat_fire.groupby(["neighborhood", "Year"])["response_time"]
     .mean()
     .reset_index(name="mean")
 )
@@ -304,9 +304,9 @@ show(p)
 medical = dat[dat["call_type"] == "Medical Incident"]
 bla = medical.groupby("original_priority")["neighborhood"].value_counts()
 medical.groupby("original_priority")["neighborhood"].nunique()
-medical.groupby("call_type_group")["on_scene_time"].mean()
+medical.groupby("call_type_group")["response_time"].mean()
 
-dat.groupby("battalion")["on_scene_time"].mean()
+dat.groupby("battalion")["response_time"].mean()
 dat["call_type"].value_counts()
 medical["priority"].value_counts()
 medical["final_priority"].value_counts()
@@ -327,7 +327,7 @@ april17th = caldat[
 ]
 april2nd = caldat[caldat["received_dttm"].dt.date == dt.date(year=2022, month=4, day=2)]
 # Select the relevant columns ("received_dttm" and column_name)
-caldat = caldat[["received_dttm", "on_scene_time"]]
+caldat = caldat[["received_dttm", "response_time"]]
 # Set the index to be the date
 caldat = caldat.set_index("received_dttm")
 

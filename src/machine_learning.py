@@ -31,7 +31,7 @@ dat = dat_all_call_types[dat_all_call_types["call_type"] == "Medical Incident"]
 dat_mini = dat.sample(n=100000)
 # Create the target variable and the features
 dat_mini["Year"] = dat_mini["call_date"].dt.year
-y = dat_mini["on_scene_time"]
+y = dat_mini["response_time"]
 X_dat = dat_mini[["neighborhood", "period_of_day", "Year"]]
 X_dat = X_dat.reset_index(drop=True)
 

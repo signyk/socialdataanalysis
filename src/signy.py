@@ -37,28 +37,27 @@ hospitals = get_hospitals()
 # print the names of the columns of the data
 print(dat.columns)
 
-"""" scatter plot of the on_scene time of all obsverations """
-
-plot_dat = dat_all_years.copy()
-# Create a column with row numbers
-plot_dat["row_num"] = range(1, len(plot_dat) + 1)
-# Plot the scatter plot
-fig = px.scatter(
-    plot_dat,
-    x="row_num",
-    y="on_scene_time",
-    title="On-scene time of all observations",
-    labels={"row_num": "Row number", "on_scene_time": "On-scene time"},
-)
-fig.update_layout(
-    xaxis=dict(
-        tickmode="array",
-        tickvals=[i for i in range(0, len(plot_dat), 100000)],
-        # text on the form 100k etc.
-        ticktext=[str(i)[:3] + "k" for i in range(0, len(plot_dat), 100000)],
-    )
-)
-fig.show()
+# """" scatter plot of the response time of all obsverations """
+# plot_dat = dat_all_years.copy()
+# # Create a column with row numbers
+# plot_dat["row_num"] = range(1, len(plot_dat) + 1)
+# # Plot the scatter plot
+# fig = px.scatter(
+#     plot_dat,
+#     x="row_num",
+#     y="response_time",
+#     title="On-scene time of all observations",
+#     labels={"row_num": "Row number", "response_time": "On-scene time"},
+# )
+# fig.update_layout(
+#     xaxis=dict(
+#         tickmode="array",
+#         tickvals=[i for i in range(0, len(plot_dat), 100000)],
+#         # text on the form 100k etc.
+#         ticktext=[str(i)[:3] + "k" for i in range(0, len(plot_dat), 100000)],
+#     )
+# )
+# fig.show()
 
 
 """ Plotting the average number of calls per day per month of each year """
@@ -111,12 +110,12 @@ print(dat_all_years.groupby(["call_date"]).size().mean())
 """ Plotting a map of San Fransisco showing average response time for each neighborhood """
 plot_data = dat.copy()
 
-fig = make_map(plot_data, neighborhoods, column_to_plot="on_scene_time")
+fig = make_map(plot_data, neighborhoods, column_to_plot="response_time")
 # fig.show()
 fig.write_html("figs/map_response_neighborhood.html")
 
 """ Plotting a map of San Fransisco showing average transport time for each neighborhood """
-# Create a column for the on scene time in minutes
+# Create a column for the res time in minutes
 plot_data["transport_time"] = (
     plot_data["hospital_dttm"] - plot_data["transport_dttm"]
 ).dt.total_seconds() / 60
@@ -156,7 +155,7 @@ p1 = make_bokeh_line_plot(
     FILTER_CALL_TYPES,
     "neighborhood",
     "Year",
-    "on_scene_time",
+    "response_time",
     init_legend_items=INTERESTING_NEIGHBORHOODS,
 )
 
@@ -183,7 +182,7 @@ p = make_bokeh_line_plot(
     ["Medical Incident", "Structure Fire", "Traffic Collision"],
     "call_type",
     "Year_month",
-    "on_scene_time",
+    "response_time",
     (min(year_months), max(year_months)),
     init_legend_items=["Medical Incident", "Structure Fire", "Traffic Collision"],
 )
@@ -194,7 +193,7 @@ hover = HoverTool(
     tooltips=[
         ("Call type", "$name"),
         ("Time period", "@x_variable{%b %Y}"),
-        ("On-scene time", "@$name{0.00} minutes"),
+        ("Response time", "@$name{0.00} minutes"),
     ],
     formatters={"@x_variable": "datetime"},
 )
@@ -205,8 +204,8 @@ p.add_tools(hover)
 
 # Change the axis labels
 p.xaxis.axis_label = "Time"
-p.yaxis.axis_label = "Average on-scene time (minutes)"
-p.title.text = "Average on-scene time by call type over months and years"
+p.yaxis.axis_label = "Average response time (minutes)"
+p.title.text = "Average response time by call type over months and years"
 
 output_file("figs/bokeh_call_types.html")
 show(p)
@@ -217,7 +216,7 @@ p = make_cal_plot(
     dat=dat,
     filter_call_types=["Medical Incident"],
     filter_years=range(2017, 2023),
-    column_name="on_scene_time",
+    column_name="response_time",
 )
 plt.savefig("figs/calplot_response.png", bbox_inches="tight")
 p.show()
@@ -286,7 +285,7 @@ p = figure(
     x_range=x_range,
     height=500,
     width=800,
-    title="Average on-scene time per year",
+    title="Average response time per year",
     toolbar_location=None,
     tools="hover",
     tooltips=[
@@ -325,7 +324,7 @@ p1 = make_bokeh_line_plot(
     ["Medical Incident"],
     "period_of_day",
     "Year",
-    "on_scene_time",
+    "response_time",
     init_legend_items=plot_dat["period_of_day"].unique().tolist(),
 )
 

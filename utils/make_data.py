@@ -191,14 +191,14 @@ def clean_data(dat: pd.DataFrame) -> pd.DataFrame:
     dat_clean = dat_clean.loc[dat_clean["on_scene_dttm"].notna()]
 
     "Create time columns"
-    # Create a column for the on scene time in minutes
-    dat_clean["on_scene_time"] = (
+    # Create a column for the response time in minutes
+    dat_clean["response_time"] = (
         dat_clean["on_scene_dttm"] - dat_clean["received_dttm"]
     ).dt.total_seconds() / 60
 
-    # Drop rows where on_scene_time is unlikely
-    dat_clean = dat_clean.loc[dat_clean["on_scene_time"] >= 0]
-    dat_clean = dat_clean.loc[dat_clean["on_scene_time"] <= 720]
+    # Drop rows where response_time is unlikely
+    dat_clean = dat_clean.loc[dat_clean["response_time"] >= 0]
+    dat_clean = dat_clean.loc[dat_clean["response_time"] <= 720]
 
     # Create a column for the transport time in minutes
     dat_clean["transport_time"] = (

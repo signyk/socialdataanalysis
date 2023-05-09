@@ -20,10 +20,10 @@ dat = clean_data(dat_raw)
 print(dat.columns)
 
 get_on_scene_map(dat)
-print(dat.on_scene_time)
-dat = dat.loc[dat["on_scene_time"] >= 0]
-dat = dat.loc[dat["on_scene_time"] < 720]
-print(dat[dat["on_scene_time"] < 0])
+print(dat.response_time)
+dat = dat.loc[dat["response_time"] >= 0]
+dat = dat.loc[dat["response_time"] < 720]
+print(dat[dat["response_time"] < 0])
 
 print(dat.neighborhood.nunique())
 print(dat.neighborhood.value_counts())
@@ -36,23 +36,23 @@ neighborhoods = json.load(f)
 
 """ Plotting a map of San Fransisco showing average response time for each neighborhood """
 mean_response = (
-    dat.groupby("neighborhood", as_index=False)["on_scene_time"]
+    dat.groupby("neighborhood", as_index=False)["response_time"]
     .mean()
-    .rename(columns={"neighborhood": "nhood", "on_scene_time": "on_scene_time"})
+    .rename(columns={"neighborhood": "nhood", "response_time": "response_time"})
 )
 
 fig = px.choropleth_mapbox(
     mean_response,
     geojson=neighborhoods,
     locations="nhood",
-    color="on_scene_time",
+    color="response_time",
     color_continuous_scale="Viridis",
-    range_color=(0, max(mean_response["on_scene_time"])),
+    range_color=(0, max(mean_response["response_time"])),
     mapbox_style="carto-positron",
     zoom=11,
     center={"lat": 37.773972, "lon": -122.431297},
     opacity=0.5,
-    labels={"on_scene_time": "on_scene_time"},
+    labels={"response_time": "response_time"},
 )
 fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 fig.show()
@@ -63,33 +63,33 @@ fig.write_html("map.html")
 
 
 tenderloin = dat[dat["neighborhood"] == "Tenderloin"]
-# tenderloin = tenderloin[tenderloin["on_scene_time"]<70]
-min(tenderloin["on_scene_time"])
+# tenderloin = tenderloin[tenderloin["response_time"]<70]
+min(tenderloin["response_time"])
 
 nbins = 400
 figure(figsize=(12, 4))
 title("Normal distribution")
 subplot(1, 2, 1)
-plot(tenderloin["on_scene_time"], ".")
+plot(tenderloin["response_time"], ".")
 subplot(1, 3, 3)
-hist(tenderloin["on_scene_time"], bins=nbins)
+hist(tenderloin["response_time"], bins=nbins)
 show()
 
 
 excelsior = dat[dat["neighborhood"] == "Excelsior"]
-# excelsior = excelsior[excelsior["on_scene_time"]<350]
-min(excelsior["on_scene_time"])
+# excelsior = excelsior[excelsior["response_time"]<350]
+min(excelsior["response_time"])
 
 nbins = 400
 figure(figsize=(12, 4))
 title("Normal distribution")
 subplot(1, 2, 1)
-plot(excelsior["on_scene_time"], ".")
+plot(excelsior["response_time"], ".")
 subplot(1, 3, 3)
-hist(excelsior["on_scene_time"], bins=nbins)
+hist(excelsior["response_time"], bins=nbins)
 show()
 
 
-test = dat[dat["on_scene_time"] > 720]
+test = dat[dat["response_time"] > 720]
 print(test.shape)
 print(dat.shape)

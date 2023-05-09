@@ -49,7 +49,7 @@ labels = ["Night", "Morning", "Afternoon", "Evening"]
 dat_filt["period_of_day"] = pd.cut(dat_filt["hour"], bins=bins, labels=labels)
 dat_filt = dat_filt[dat_filt["call_date"].dt.year >= 2017]
 dat_mini = dat_filt.sample(n=100000)
-y = dat_mini["on_scene_time"]
+y = dat_mini["response_time"]
 X_dat = dat_mini[["neighborhood", "period_of_day"]]
 X_dat = X_dat.reset_index(drop=True)
 
@@ -122,8 +122,8 @@ X = StandardScaler().fit_transform(X)
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X)
 PCA_df = pd.DataFrame(data=X_pca, columns=["PC1", "PC2"])
-PCA_df = pd.concat([PCA_df, dat_mini["on_scene_time"].reset_index(drop=True)], axis=1)
-PCA_df["on_scene_time"] = LabelEncoder().fit_transform(PCA_df["on_scene_time"])
+PCA_df = pd.concat([PCA_df, dat_mini["response_time"].reset_index(drop=True)], axis=1)
+PCA_df["response_time"] = LabelEncoder().fit_transform(PCA_df["response_time"])
 PCA_df.head()
 
 
@@ -135,7 +135,7 @@ print(pca.explained_variance_)
 #########################
 
 X = dat_mini[["neighborhood", "period_of_day"]]
-y = dat_mini["on_scene_time"]
+y = dat_mini["response_time"]
 
 # Encode categorical variables as dummy variables
 X = pd.get_dummies(X, columns=["neighborhood", "period_of_day"])
@@ -210,7 +210,7 @@ X = dat_mini[
 X = pd.get_dummies(
     X, columns=["Priority", "battalion", "station_area", "period_of_day"]
 )
-y = dat_mini["on_scene_time"]
+y = dat_mini["response_time"]
 
 # Split data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(
