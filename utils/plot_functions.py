@@ -181,7 +181,9 @@ def make_boxplot(
     return b
 
 
-def plot_importance(column_names: List[str], importances: List[float]):
+def plot_importance(
+    column_names: List[str], importances: List[float], title="Importance of Features"
+):
     # Create a dataframe from the feature importances
     feature_importances = pd.DataFrame(
         {"feature": column_names, "importance": importances}
@@ -191,7 +193,13 @@ def plot_importance(column_names: List[str], importances: List[float]):
     source = ColumnDataSource(feature_importances)
 
     # Create a figure with a datetime type x-axis
-    p = figure(x_range=feature_importances["feature"], height=500, width=800)
+    p = figure(
+        x_range=feature_importances["feature"],
+        height=500,
+        width=800,
+        title=title,
+        toolbar_location=None,
+    )
 
     # Add plot elements
     p.vbar(
@@ -209,5 +217,60 @@ def plot_importance(column_names: List[str], importances: List[float]):
     hover = HoverTool()
     hover.tooltips = [("Feature", "@feature"), ("Importance", "@importance{0.000}")]
     p.add_tools(hover)
+
+    return p
+
+
+def plot_importance2(importance_df: pd.DataFrame, top_n: int = 10):
+    """Plot the top_n most important features from a dataframe of feature importances
+    where the column names denote the method used to calculate the importance."""
+
+    plot_data = importance_df.reset_index().rename(columns={"index": "Feature"})
+    plot_data = plot_data.dropna(axis=1, how="all")
+    plot_data = plot_data.melt(id_vars=["Feature"], var_name="Method")
+    plot_data = plot_data.sort_values(by=["Method", "value"], ascending=False)
+    plot_data = plot_data.groupby("Method").head(top_n)
+    plot_data = plot_data.pivot(
+        index="Feature", columns="Method", values="value"
+    ).reset_index()
+    plot_data = plot_data.fillna(0)
+
+    methods = [d for d in list(plot_data.columns[1:]) if not pd.isna(d)]
+    src = ColumnDataSource(plot_data)
+    x_range = plot_data["Feature"].unique().tolist()
+    viridis = get_viridis_pallette(len(methods))
+
+    # Stacked bar chart
+    p = figure(
+        x_range=x_range,
+        height=500,
+        width=800,
+        title="Importance of Features by Method",
+        toolbar_location=None,
+        tools="hover",
+        tooltips=[
+            ("Method", "$name"),
+            ("Feature", "@Feature"),
+            ("Importance", "@$name{0.000}"),
+        ],
+    )
+
+    p.vbar_stack(
+        methods,
+        x="Feature",
+        width=0.9,
+        source=src,
+        color=viridis,
+        legend_label=[format_string(d) for d in methods],
+    )
+
+    p.y_range.start = 0
+    p.xgrid.grid_line_color = None
+    p.axis.minor_tick_line_color = None
+    p.outline_line_color = None
+    p.legend.location = "top_right"
+    p.legend.orientation = "vertical"
+    p.add_layout(p.legend[0], "right")
+    p.xaxis.major_label_orientation = 1.1
 
     return p

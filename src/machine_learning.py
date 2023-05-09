@@ -17,7 +17,7 @@ from bokeh.models import ColumnDataSource, HoverTool
 
 # Local
 from utils.make_data import get_data, clean_data, filter_data_years
-from utils.plot_functions import plot_importance
+from utils.plot_functions import plot_importance, plot_importance2
 from utils.help_functions import get_viridis_pallette
 
 """ Importing data """
@@ -46,6 +46,11 @@ y_train, y_test, X_train, X_test = train_test_split(
     y, X_dat, test_size=0.2, random_state=1
 )
 
+# Prepare a dataframe for the feature importances
+feature_importances = pd.DataFrame(
+    index=column_names, columns=["Random Forest", "Tree-based", "Recursive"]
+)
+
 """ Random Forest """
 model = RandomForestRegressor(n_estimators=100, max_depth=5, random_state=1)
 model.fit(X_train, y_train)
@@ -59,11 +64,11 @@ mean_squared_error(y_test, y_pred)
 # Get the feature importances
 importances_rf = model.feature_importances_
 
-# Plot the feature importances
+# Get the 10 most important features
 indices_rf = importances_rf.argsort()[-10:][::-1]
-p = plot_importance(column_names[indices_rf], importances_rf[indices_rf])
-output_file("figs/feature_importance_random_forest.html")
-show(p)
+
+# Add importances to the dataframe
+feature_importances["Random Forest"] = importances_rf
 
 """ Tree-based feature selection """
 # Create an instance of ExtraTreesRegressor
@@ -75,13 +80,11 @@ et.fit(X_dat, y)
 # Get the feature importances
 importances_et = et.feature_importances_
 
-# Plot the feature importances
+# Select the 10 most important features
 indices_et = importances_et.argsort()[-10:][::-1]
 
-p = plot_importance(column_names[indices_et], importances_et[indices_et])
-output_file("figs/feature_importance_tree_based.html")
-show(p)
-
+# Add importances to the dataframe
+feature_importances["Tree-based"] = importances_et
 
 """ Recursive feature elimination """
 # Create an instance of linear regression
@@ -104,6 +107,10 @@ indices_rfe = importances_rfe.argsort()[:10]
 
 
 """ Summary """
+
+# Plot the feature importances
+plot_importance2(feature_importances, 10)
+
 # Data frame the the top 10 features according to different methods
 top_10_features = pd.DataFrame(
     {
