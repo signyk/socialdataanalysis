@@ -59,9 +59,7 @@ for i in range(n_iterations):
     importances_rf = model.feature_importances_
 
     # Add the importances to the array
-    importances_array[:, i] = model.feature_importances_le = (
-        "Feature importances according to Random Forest",
-    )
+    importances_array[:, i] = model.feature_importances_
 
 # Plot the feature importances
 # Calculate the mean of the importances
